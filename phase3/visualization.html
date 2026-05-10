@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Phase 3 — Memory Bandwidth Roofline Analysis</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 1200px; margin: 40px auto; padding: 0 20px; background: #0f0f0f; color: #e0e0e0; }
+  h1 { color: #7ec8e3; }
+  h2 { color: #a8d8a8; margin-top: 40px; }
+  .chart-wrap { background: #1a1a1a; border-radius: 8px; padding: 20px; margin: 24px 0; }
+  canvas { max-height: 450px; }
+  .note { font-size: 0.85em; color: #888; margin: 8px 0 0 0; }
+  table { border-collapse: collapse; width: 100%; margin: 16px 0; }
+  th, td { border: 1px solid #333; padding: 8px 12px; text-align: right; }
+  th { background: #222; color: #7ec8e3; }
+  td:first-child { text-align: left; }
+</style>
+</head>
+<body>
+<h1>Phase 3 — Memory Bandwidth Roofline Analysis</h1>
+<p>BitNet b1.58 2B4T &nbsp;|&nbsp; Gate-count baseline: Phase 1+2 &nbsp;|&nbsp; Roofline model: ideal overlap assumed</p>
+
+<h2>1. Roofline Plot: Arithmetic Intensity vs Attainable Performance</h2>
+<div class="chart-wrap">
+<canvas id="rooflineChart"></canvas>
+<p class="note">
+  Diagonal lines = memory bandwidth ceiling (slope = BW).  Horizontal lines = peak compute ceiling.
+  Points = operations at specific (wprec, aprec, batch, L) configurations.
+  Everything left of ridge point is memory-bound.
+</p>
+</div>
+
+<h2>2. Decode Throughput — Batch=1 (Interactive Inference)</h2>
+<div class="chart-wrap">
+<canvas id="tpsChart"></canvas>
+<p class="note">Tokens/sec for batch=1 decode.  All numbers are roofline upper bounds (ideal compute/memory overlap).</p>
+</div>
+
+<h2>3. Throughput vs Sequence Length (Batch=1)</h2>
+<div class="chart-wrap">
+<canvas id="seqChart"></canvas>
+<p class="note">Shows how KV cache growth erodes throughput at long context.</p>
+</div>
+
+<script>
+// ---- Roofline Chart ----
+const intensities = [0.1, 0.1778, 0.3162, 0.5623, 1.0, 1.7783, 3.1623, 5.6234, 10.0, 17.7828, 31.6228, 56.2341, 100.0, 177.8279, 316.2278, 562.3413, 1000.0, 1778.2794, 3162.2777, 5623.4133, 10000.0, 17782.7941, 31622.7766, 56234.1325, 100000.0, 177827.941, 316227.766, 562341.3252, 1000000.0, 1778279.41, 3162277.6602, 5623413.2519, 10000000.0, 17782794.1004, 31622776.6017, 56234132.519];
+
+function rooflineCurve(peakTmacs, bwTbs, intensities) {
+  return intensities.map(i => Math.min(peakTmacs, i * bwTbs * 1000));  // bw in TB/s, peak in TMACS → result in GMACS
+}
+
+// Operation points
+const opPoints = [
+  // label, intensity, peakTmacs (chip-specific), color
+  {label:"fp16 BitLinear B=1",  x:0.5, chip:"H100",  color:"#4488ff"},
+  {label:"trit BitLinear B=1",  x:5.0, chip:"H100",  color:"#44ff88"},
+  {label:"trit BitLinear B=32", x:158.83, chip:"H100",  color:"#ffcc44"},
+  {label:"Attn decode L=2048",  x:8.0, chip:"H100",  color:"#ff6644"},
+  {label:"Attn prefill L=2048", x:2730.67, chip:"H100",  color:"#cc44ff"},
+];
+
+const h100bw = 3.35;
+const h100pk = 494.8;
+const th100pk= 7356.9;
+
+const roofCtx = document.getElementById('rooflineChart').getContext('2d');
+new Chart(roofCtx, {
+  type: 'scatter',
+  data: {
+    datasets: [
+      {
+        label: 'H100 memory ceiling (3.35 TB/s)',
+        data: intensities.map((x,i) => ({x: Math.log10(x), y: Math.log10(Math.min(h100pk, x * h100bw * 1000))})),
+        type: 'line', borderColor: '#4488ff', backgroundColor: 'transparent',
+        pointRadius: 0, borderWidth: 2,
+      },
+      {
+        label: 'TH100/TPB memory ceiling (same BW)',
+        data: intensities.map((x,i) => ({x: Math.log10(x), y: Math.log10(Math.min(th100pk, x * h100bw * 1000))})),
+        type: 'line', borderColor: '#44ff88', backgroundColor: 'transparent',
+        pointRadius: 0, borderWidth: 2, borderDash: [6,3],
+      },
+      {
+        label: 'H100 compute ceiling',
+        data: intensities.map(x => ({x: Math.log10(x), y: Math.log10(h100pk)})),
+        type: 'line', borderColor: '#4488ff80', backgroundColor: 'transparent',
+        pointRadius: 0, borderWidth: 1, borderDash: [2,4],
+      },
+      {
+        label: 'TH100 compute ceiling (~15× H100)',
+        data: intensities.map(x => ({x: Math.log10(x), y: Math.log10(th100pk)})),
+        type: 'line', borderColor: '#44ff8880', backgroundColor: 'transparent',
+        pointRadius: 0, borderWidth: 1, borderDash: [2,4],
+      },
+      ...opPoints.map(p => ({
+        label: p.label,
+        data: [{x: Math.log10(p.x), y: Math.log10(Math.min(h100pk, p.x * h100bw * 1000))}],
+        type: 'scatter', backgroundColor: p.color, pointRadius: 8,
+      }))
+    ]
+  },
+  options: {
+    plugins: { legend: { labels: { color: '#ccc', font: { size: 11 } } } },
+    scales: {
+      x: { title: { display: true, text: 'Arithmetic Intensity log₁₀(ops/byte)', color: '#aaa' },
+           ticks: { color: '#aaa', callback: v => `10^${v}` }, grid: { color: '#333' } },
+      y: { title: { display: true, text: 'Attainable log₁₀(GMAC/s)', color: '#aaa' },
+           ticks: { color: '#aaa', callback: v => `10^${v}` }, grid: { color: '#333' } },
+    }
+  }
+});
+
+// ---- TPS Bar Chart ----
+const configLabels = ["H100 fp16 baseline", "H100 trit-w/int8-a (hypothetical)", "H100 trit-w/int4-a (hypothetical)", "MI300X fp16 baseline", "MI300X trit-w/int4-a (hypothetical)", "TH100 drop-in ternary", "TPB purpose-built ternary"];
+const tps_l128  = [804, 8037, 8037, 1272, 12716, 8037, 239918];
+const tps_l2048 = [804, 8037, 8037, 1272, 12716, 8037, 85195];
+const tps_l4096 = [804, 8037, 8037, 1272, 12716, 8037, 42597];
+
+const tpsCtx = document.getElementById('tpsChart').getContext('2d');
+new Chart(tpsCtx, {
+  type: 'bar',
+  data: {
+    labels: configLabels.map(l => l.length > 28 ? l.slice(0,28)+'…' : l),
+    datasets: [
+      {label:'L=128',  data:tps_l128,  backgroundColor:'#4488ff88', borderColor:'#4488ff', borderWidth:1},
+      {label:'L=2048', data:tps_l2048, backgroundColor:'#44ff8888', borderColor:'#44ff88', borderWidth:1},
+      {label:'L=4096', data:tps_l4096, backgroundColor:'#ff664488', borderColor:'#ff6644', borderWidth:1},
+    ]
+  },
+  options: {
+    plugins: { legend: { labels: { color: '#ccc' } } },
+    scales: {
+      x: { ticks: { color: '#aaa', maxRotation: 30 }, grid: { color: '#333' } },
+      y: { title: { display: true, text: 'Tokens/sec (log scale)', color: '#aaa' },
+           type: 'logarithmic', ticks: { color: '#aaa' }, grid: { color: '#333' } }
+    }
+  }
+});
+
+// ---- Throughput vs Seq Length ----
+const seqLengths = [128, 512, 1024, 2048, 4096];
+const h100fp16_seq   = [804, 804, 804, 804, 804];
+const h100trit_seq   = [8037, 8037, 8037, 8037, 8037];
+const th100_seq      = [8037, 8037, 8037, 8037, 8037];
+const tpb_seq        = [239918, 239918, 170390, 85195, 42597];
+
+const seqCtx = document.getElementById('seqChart').getContext('2d');
+new Chart(seqCtx, {
+  type: 'line',
+  data: {
+    labels: seqLengths,
+    datasets: [
+      {label:'H100 fp16', data:h100fp16_seq, borderColor:'#4488ff', backgroundColor:'transparent', pointRadius:4},
+      {label:'H100 trit-w/int4-a', data:h100trit_seq, borderColor:'#88aaff', backgroundColor:'transparent', pointRadius:4, borderDash:[4,3]},
+      {label:'TH100 drop-in', data:th100_seq, borderColor:'#44ff88', backgroundColor:'transparent', pointRadius:4},
+      {label:'TPB purpose-built', data:tpb_seq, borderColor:'#ffcc44', backgroundColor:'transparent', pointRadius:4},
+    ]
+  },
+  options: {
+    plugins: { legend: { labels: { color: '#ccc' } } },
+    scales: {
+      x: { title: { display: true, text: 'Context length (tokens)', color: '#aaa' },
+           ticks: { color: '#aaa' }, grid: { color: '#333' } },
+      y: { title: { display: true, text: 'Tokens/sec (log scale)', color: '#aaa' },
+           type: 'logarithmic', ticks: { color: '#aaa' }, grid: { color: '#333' } }
+    }
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Phase 4 — Hybrid Architecture Pareto Analysis</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 1200px; margin: 40px auto; padding: 0 20px; background: #0f0f0f; color: #e0e0e0; }
+  h1 { color: #7ec8e3; }
+  h2 { color: #a8d8a8; margin-top: 40px; }
+  .chart-wrap { background: #1a1a1a; border-radius: 8px; padding: 20px; margin: 24px 0; }
+  canvas { max-height: 480px; }
+  .note { font-size: 0.85em; color: #888; margin: 8px 0 0 0; }
+  .finding { background: #1a2a1a; border-left: 3px solid #44ff88; padding: 12px 16px; margin: 16px 0; border-radius: 4px; }
+</style>
+</head>
+<body>
+<h1>Phase 4 — Hybrid Activation Precision: Pareto Analysis</h1>
+<p>All weights are trit. Activation precision varies per component per layer.</p>
+
+<div class="finding">
+  <strong>Key finding:</strong> BitNet a4.8 (ffn_down=int8, rest=int4) is Pareto-optimal.
+  It achieves lower quality degradation than uniform int4 at nearly the same performance.
+  The mechanism: FFN down inputs have massive outliers (SmoothQuant, BitNet a4.8);
+  keeping only this component at int8 captures ~49% of the quality benefit of full int8.
+</div>
+
+<h2>1. Pareto Frontier: Quality vs Performance (TPB, batch=1, L=2048)</h2>
+<div class="chart-wrap">
+<canvas id="paretoChart"></canvas>
+<p class="note">X-axis: Quality Degradation Units (lower = better; 0=int8, 100=uniform int4). Y-axis: tokens/sec.
+★ points are Pareto-optimal. [All QDU values are PROJECTED estimates]</p>
+</div>
+
+<h2>2. Gate-Count Speedup by Configuration</h2>
+<div class="chart-wrap">
+<canvas id="speedupChart"></canvas>
+<p class="note">Speedup vs fp16 binary at L=2048. Higher is better.</p>
+</div>
+
+<script>
+const qdus    = [0.0, 100.0, 350.00000000000017, 549.9999999999999, 50.70422535211264, 30.98591549295777, 76.43979057591623, 38.75820367229553, 50.70422535211264, 278.8732394366196, 88.38581225573334];
+const tpsList = [42597.452799479164, 85194.90559895833, 170389.81119791666, 212987.26399739584, 85194.90559895833, 85194.90559895833, 75171.97552849265, 75171.97552849265, 85194.90559895833, 212987.26399739584, 85194.90559895833];
+const speedups= [6.716927658361081, 14.873453566324075, 28.9751045633881, 49.48981243648909, 12.799622388932569, 12.170896003557703, 12.800867032593054, 11.420651873379049, 12.799622388932569, 25.64071829560051, 14.558936206389342];
+const labels  = ["Uniform int8 (reference)", "Uniform int4 (Phase 2 rec.)", "Uniform int2", "Uniform trit (1.58b)", "BitNet a4.8 (ffn_down=int8)", "a4.8-extended (ffn_down+attn_out=int8)", "Position-sensitive (first/last=int8)", "Conservative (pos+comp hybrid)", "KV-optimized (ffn_down=int8, QKV=int4)", "Aggressive (all-trit except ffn_down)", "Minimal hybrid (ffn_down first/last=int8)"];
+const isFront = [true, false, false, false, false, true, false, false, false, true, false];
+
+const colors  = isFront.map(f => f ? '#ffcc44' : '#4488ff88');
+const borders = isFront.map(f => f ? '#ffcc44' : '#4488ff');
+const sizes   = isFront.map(f => f ? 12 : 7);
+
+// Pareto scatter
+new Chart(document.getElementById('paretoChart').getContext('2d'), {
+  type: 'scatter',
+  data: {
+    datasets: [{
+      label: 'Configurations',
+      data: qdus.map((q, i) => ({x: q, y: tpsList[i]})),
+      backgroundColor: colors,
+      borderColor: borders,
+      pointRadius: sizes,
+      pointStyle: isFront.map(f => f ? 'star' : 'circle'),
+    }]
+  },
+  options: {
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: ctx => labels[ctx.dataIndex] + '  QDU=' + qdus[ctx.dataIndex].toFixed(1) + '  TPS=' + Math.round(tpsList[ctx.dataIndex]).toLocaleString(),
+        }
+      }
+    },
+    scales: {
+      x: { title: { display: true, text: 'Quality Degradation (QDU, lower=better) [PROJECTED]', color: '#aaa' }, ticks: { color: '#aaa' }, grid: { color: '#333' } },
+      y: { title: { display: true, text: 'Tokens/sec (TPB, log scale)', color: '#aaa' }, type: 'logarithmic', ticks: { color: '#aaa' }, grid: { color: '#333' } },
+    }
+  }
+});
+
+// Speedup bar
+new Chart(document.getElementById('speedupChart').getContext('2d'), {
+  type: 'bar',
+  data: {
+    labels: labels.map(l => l.length > 30 ? l.slice(0,30)+'…' : l),
+    datasets: [{
+      label: 'Speedup vs fp16 binary',
+      data: speedups,
+      backgroundColor: isFront.map(f => f ? '#ffcc4488' : '#4488ff44'),
+      borderColor: isFront.map(f => f ? '#ffcc44' : '#4488ff'),
+      borderWidth: 1,
+    }]
+  },
+  options: {
+    plugins: { legend: { labels: { color: '#ccc' } } },
+    scales: {
+      x: { ticks: { color: '#aaa', maxRotation: 35 }, grid: { color: '#333' } },
+      y: { title: { display: true, text: 'Speedup vs fp16', color: '#aaa' }, ticks: { color: '#aaa' }, grid: { color: '#333' } },
+    }
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+{
+  "attn_out": {
+    "component": "attn_out",
+    "p_nonzero_assumed": 0.6667,
+    "p_nonzero_empirical": 0.584059,
+    "delta_pnz": -0.0826,
+    "speedup_int8_assumed": 9.71,
+    "speedup_int8_empirical": 11.017,
+    "speedup_int8_pct_change": 13.45,
+    "speedup_int4_assumed": 18.628,
+    "speedup_int4_empirical": 21.019,
+    "speedup_int4_pct_change": 12.83
+  },
+  "ffn_down": {
+    "component": "ffn_down",
+    "p_nonzero_assumed": 0.6667,
+    "p_nonzero_empirical": 0.585918,
+    "delta_pnz": -0.0807,
+    "speedup_int8_assumed": 9.71,
+    "speedup_int8_empirical": 10.983,
+    "speedup_int8_pct_change": 13.11,
+    "speedup_int4_assumed": 18.628,
+    "speedup_int4_empirical": 20.958,
+    "speedup_int4_pct_change": 12.51
+  },
+  "ffn_gate": {
+    "component": "ffn_gate",
+    "p_nonzero_assumed": 0.6667,
+    "p_nonzero_empirical": 0.576948,
+    "delta_pnz": -0.0897,
+    "speedup_int8_assumed": 9.71,
+    "speedup_int8_empirical": 11.146,
+    "speedup_int8_pct_change": 14.78,
+    "speedup_int4_assumed": 18.628,
+    "speedup_int4_empirical": 21.253,
+    "speedup_int4_pct_change": 14.09
+  },
+  "ffn_up": {
+    "component": "ffn_up",
+    "p_nonzero_assumed": 0.6667,
+    "p_nonzero_empirical": 0.583056,
+    "delta_pnz": -0.0836,
+    "speedup_int8_assumed": 9.71,
+    "speedup_int8_empirical": 11.035,
+    "speedup_int8_pct_change": 13.64,
+    "speedup_int4_assumed": 18.628,
+    "speedup_int4_empirical": 21.051,
+    "speedup_int4_pct_change": 13.01
+  },
+  "qkv": {
+    "component": "qkv",
+    "p_nonzero_assumed": 0.6667,
+    "p_nonzero_empirical": 0.553242,
+    "delta_pnz": -0.1134,
+    "speedup_int8_assumed": 9.71,
+    "speedup_int8_empirical": 11.599,
+    "speedup_int8_pct_change": 19.45,
+    "speedup_int4_assumed": 18.628,
+    "speedup_int4_empirical": 22.076,
+    "speedup_int4_pct_change": 18.51
+  },
+  "_overall": {
+    "p_nonzero_assumed": 0.6667,
+    "p_nonzero_empirical": 0.5781,
+    "delta_pnz": -0.0886,
+    "speedup_bitlinear_int8_assumed": 9.71,
+    "speedup_bitlinear_int8_empirical": 11.124,
+    "speedup_int8_pct_change": 14.56,
+    "speedup_bitlinear_int4_assumed": 18.628,
+    "speedup_bitlinear_int4_empirical": 21.215,
+    "speedup_int4_pct_change": 13.89,
+    "note": "BitLinear gate speedup only. Full-layer speedups differ because attention (act\u00d7act) and non-matmul ops are unchanged."
+  }
+}

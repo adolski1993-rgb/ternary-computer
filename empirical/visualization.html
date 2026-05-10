@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8">
+<title>Empirical: BitNet Weight Distribution</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  body{font-family:system-ui;max-width:1100px;margin:40px auto;padding:0 20px;background:#0f0f0f;color:#e0e0e0}
+  h1{color:#7ec8e3} h2{color:#a8d8a8;margin-top:36px}
+  .wrap{background:#1a1a1a;border-radius:8px;padding:20px;margin:20px 0}
+  canvas{max-height:380px}
+  .key{background:#152515;border-left:3px solid #44ff88;padding:10px 14px;margin:12px 0;border-radius:4px;font-size:.9em}
+</style>
+</head>
+<body>
+<h1>Empirical Validation: BitNet b1.58 2B4T Weight Distribution</h1>
+<div class="key">
+  <strong>Key finding:</strong> Measured p_nonzero = 0.5781
+  vs assumed 0.6667 (delta = -0.0886).
+  BitLinear gate speedup changes by ~+14.6% for int8 activations.
+</div>
+
+<h2>1. Per-Component Nonzero Fraction</h2>
+<div class="wrap">
+<canvas id="compChart"></canvas>
+</div>
+
+<h2>2. Nonzero Fraction by Layer Depth</h2>
+<div class="wrap">
+<canvas id="layerChart"></canvas>
+</div>
+
+<script>
+new Chart(document.getElementById('compChart').getContext('2d'),{
+  type:'bar',
+  data:{
+    labels:['Attention output', 'FFN down', 'FFN gate', 'FFN up', 'QKV projection'],
+    datasets:[
+      {label:'p_nonzero (empirical)', data:[0.584059, 0.585918, 0.576948, 0.583056, 0.553242], backgroundColor:'#44ff8888', borderColor:'#44ff88', borderWidth:1},
+      {label:'p_nonzero (assumed 2/3)', data:[0.6667, 0.6667, 0.6667, 0.6667, 0.6667], type:'line', borderColor:'#ff6644', borderWidth:2, pointRadius:0, fill:false}
+    ]
+  },
+  options:{plugins:{legend:{labels:{color:'#ccc'}}},scales:{x:{ticks:{color:'#aaa'},grid:{color:'#333'}},y:{min:0,max:1,title:{display:true,text:'Fraction',color:'#aaa'},ticks:{color:'#aaa'},grid:{color:'#333'}}}}
+});
+new Chart(document.getElementById('layerChart').getContext('2d'),{
+  type:'line',
+  data:{
+    labels:[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29],
+    datasets:[
+      {label:'p_nonzero per layer', data:[0.590145, 0.441122, 0.509633, 0.553343, 0.576843, 0.578702, 0.590976, 0.603006, 0.600733, 0.597086, 0.579663, 0.59257, 0.574825, 0.585597, 0.567939, 0.58222, 0.583049, 0.590142, 0.590883, 0.589414, 0.567296, 0.595951, 0.582579, 0.595323, 0.585028, 0.597959, 0.597041, 0.583555, 0.588641, 0.571888], borderColor:'#4488ff', backgroundColor:'transparent', pointRadius:3},
+      {label:'assumed 2/3', data:[0.6667, 0.6667, 0.6667, 0.6667, 0.6667, 0.6667, 0.6667, 0.6667, 0.6667, 0.6667, 0.6667, 0.6667, 0.6667, 0.6667, 0.6667, 0.6667, 0.6667, 0.6667, 0.6667, 0.6667, 0.6667, 0.6667, 0.6667, 0.6667, 0.6667, 0.6667, 0.6667, 0.6667, 0.6667, 0.6667], borderColor:'#ff6644', borderWidth:2, pointRadius:0, borderDash:[6,3]}
+    ]
+  },
+  options:{plugins:{legend:{labels:{color:'#ccc'}}},scales:{x:{title:{display:true,text:'Layer',color:'#aaa'},ticks:{color:'#aaa'},grid:{color:'#333'}},y:{min:0,max:1,title:{display:true,text:'p_nonzero',color:'#aaa'},ticks:{color:'#aaa'},grid:{color:'#333'}}}}
+});
+</script>
+</body>
+</html>

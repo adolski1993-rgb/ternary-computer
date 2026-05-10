@@ -1,0 +1,42 @@
+{
+  "attn_out": {
+    "n_total": 196608000,
+    "n_tensors": 30,
+    "p_neg": 0.292074,
+    "p_zero": 0.415941,
+    "p_pos": 0.291985,
+    "p_nonzero": 0.584059
+  },
+  "ffn_down": {
+    "n_total": 530841600,
+    "n_tensors": 30,
+    "p_neg": 0.292935,
+    "p_zero": 0.414082,
+    "p_pos": 0.292983,
+    "p_nonzero": 0.585918
+  },
+  "ffn_gate": {
+    "n_total": 530841600,
+    "n_tensors": 30,
+    "p_neg": 0.288451,
+    "p_zero": 0.423052,
+    "p_pos": 0.288497,
+    "p_nonzero": 0.576948
+  },
+  "ffn_up": {
+    "n_total": 530841600,
+    "n_tensors": 30,
+    "p_neg": 0.291519,
+    "p_zero": 0.416944,
+    "p_pos": 0.291537,
+    "p_nonzero": 0.583056
+  },
+  "qkv": {
+    "n_total": 294912000,
+    "n_tensors": 90,
+    "p_neg": 0.276639,
+    "p_zero": 0.446758,
+    "p_pos": 0.276603,
+    "p_nonzero": 0.553242
+  }
+}

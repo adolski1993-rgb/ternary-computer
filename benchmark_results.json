@@ -1,0 +1,90 @@
+{
+  "small": {
+    "Addition": {
+      "binary": 75.0,
+      "ternary": 45.0,
+      "speedup": 1.6666666666666667
+    },
+    "Subtraction": {
+      "binary": 165.0,
+      "ternary": 54.0,
+      "speedup": 3.0555555555555554
+    },
+    "Multiplication": {
+      "binary": 261.675,
+      "ternary": 158.22,
+      "speedup": 1.6538680318543801
+    },
+    "Comparison": {
+      "binary": 181.0,
+      "ternary": 55.834,
+      "speedup": 3.241752337285525
+    }
+  },
+  "medium": {
+    "Addition": {
+      "binary": 145.0,
+      "ternary": 90.0,
+      "speedup": 1.6111111111111112
+    },
+    "Subtraction": {
+      "binary": 319.0,
+      "ternary": 108.0,
+      "speedup": 2.9537037037037037
+    },
+    "Multiplication": {
+      "binary": 1005.575,
+      "ternary": 607.68,
+      "speedup": 1.6547771853607163
+    },
+    "Comparison": {
+      "binary": 349.0,
+      "ternary": 109.844,
+      "speedup": 3.177233167036889
+    }
+  },
+  "large": {
+    "Addition": {
+      "binary": 215.0,
+      "ternary": 135.0,
+      "speedup": 1.5925925925925926
+    },
+    "Subtraction": {
+      "binary": 473.0,
+      "ternary": 162.0,
+      "speedup": 2.919753086419753
+    },
+    "Multiplication": {
+      "binary": 2277.065,
+      "ternary": 1372.275,
+      "speedup": 1.6593357745349875
+    },
+    "Comparison": {
+      "binary": 517.0,
+      "ternary": 163.86,
+      "speedup": 3.1551324301232757
+    }
+  },
+  "nn_dot": {
+    "16": {
+      "binary": 6048,
+      "ternary": 1388,
+      "speedup": 4.357348703170029
+    },
+    "64": {
+      "binary": 27552,
+      "ternary": 4697,
+      "speedup": 5.865871833084948
+    },
+    "256": {
+      "binary": 105824,
+      "ternary": 18520,
+      "speedup": 5.714038876889849
+    },
+    "1024": {
+      "binary": 416624,
+      "ternary": 68519,
+      "speedup": 6.080415651133262
+    }
+  }
+}

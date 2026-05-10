@@ -1,0 +1,785 @@
+{
+  "1": {
+    "H100 fp16 baseline": {
+      "128": {
+        "tokens_per_sec": 803.7255245184748,
+        "bottleneck": "weight",
+        "compute_time_s": 4.252057806973219e-06,
+        "weight_time_s": 0.0012442058507462688,
+        "kv_time_s": 2.93444776119403e-06
+      },
+      "512": {
+        "tokens_per_sec": 803.7255245184748,
+        "bottleneck": "weight",
+        "compute_time_s": 4.371274381000505e-06,
+        "weight_time_s": 0.0012442058507462688,
+        "kv_time_s": 1.173779104477612e-05
+      },
+      "1024": {
+        "tokens_per_sec": 803.7255245184748,
+        "bottleneck": "weight",
+        "compute_time_s": 4.530229813036887e-06,
+        "weight_time_s": 0.0012442058507462688,
+        "kv_time_s": 2.347558208955224e-05
+      },
+      "2048": {
+        "tokens_per_sec": 803.7255245184748,
+        "bottleneck": "weight",
+        "compute_time_s": 4.848140677109651e-06,
+        "weight_time_s": 0.0012442058507462688,
+        "kv_time_s": 4.695116417910448e-05
+      },
+      "4096": {
+        "tokens_per_sec": 803.7255245184748,
+        "bottleneck": "weight",
+        "compute_time_s": 5.483962405255179e-06,
+        "weight_time_s": 0.0012442058507462688,
+        "kv_time_s": 9.390232835820896e-05
+      }
+    },
+    "H100 trit-w/int8-a (hypothetical)": {
+      "128": {
+        "tokens_per_sec": 8037.25524518475,
+        "bottleneck": "weight",
+        "compute_time_s": 2.1260289034866094e-06,
+        "weight_time_s": 0.00012442058507462685,
+        "kv_time_s": 1.467223880597015e-06
+      },
+      "512": {
+        "tokens_per_sec": 8037.25524518475,
+        "bottleneck": "weight",
+        "compute_time_s": 2.1856371905002525e-06,
+        "weight_time_s": 0.00012442058507462685,
+        "kv_time_s": 5.86889552238806e-06
+      },
+      "1024": {
+        "tokens_per_sec": 8037.25524518475,
+        "bottleneck": "weight",
+        "compute_time_s": 2.2651149065184437e-06,
+        "weight_time_s": 0.00012442058507462685,
+        "kv_time_s": 1.173779104477612e-05
+      },
+      "2048": {
+        "tokens_per_sec": 8037.25524518475,
+        "bottleneck": "weight",
+        "compute_time_s": 2.4240703385548256e-06,
+        "weight_time_s": 0.00012442058507462685,
+        "kv_time_s": 2.347558208955224e-05
+      },
+      "4096": {
+        "tokens_per_sec": 8037.25524518475,
+        "bottleneck": "weight",
+        "compute_time_s": 2.7419812026275895e-06,
+        "weight_time_s": 0.00012442058507462685,
+        "kv_time_s": 4.695116417910448e-05
+      }
+    },
+    "H100 trit-w/int4-a (hypothetical)": {
+      "128": {
+        "tokens_per_sec": 8037.25524518475,
+        "bottleneck": "weight",
+        "compute_time_s": 2.1260289034866094e-06,
+        "weight_time_s": 0.00012442058507462685,
+        "kv_time_s": 7.336119402985075e-07
+      },
+      "512": {
+        "tokens_per_sec": 8037.25524518475,
+        "bottleneck": "weight",
+        "compute_time_s": 2.1856371905002525e-06,
+        "weight_time_s": 0.00012442058507462685,
+        "kv_time_s": 2.93444776119403e-06
+      },
+      "1024": {
+        "tokens_per_sec": 8037.25524518475,
+        "bottleneck": "weight",
+        "compute_time_s": 2.2651149065184437e-06,
+        "weight_time_s": 0.00012442058507462685,
+        "kv_time_s": 5.86889552238806e-06
+      },
+      "2048": {
+        "tokens_per_sec": 8037.25524518475,
+        "bottleneck": "weight",
+        "compute_time_s": 2.4240703385548256e-06,
+        "weight_time_s": 0.00012442058507462685,
+        "kv_time_s": 1.173779104477612e-05
+      },
+      "4096": {
+        "tokens_per_sec": 8037.25524518475,
+        "bottleneck": "weight",
+        "compute_time_s": 2.7419812026275895e-06,
+        "weight_time_s": 0.00012442058507462685,
+        "kv_time_s": 2.347558208955224e-05
+      }
+    },
+    "MI300X fp16 baseline": {
+      "128": {
+        "tokens_per_sec": 1271.5657552083333,
+        "bottleneck": "weight",
+        "compute_time_s": 3.2181514456172557e-06,
+        "weight_time_s": 0.000786432,
+        "kv_time_s": 1.8547924528301886e-06
+      },
+      "512": {
+        "tokens_per_sec": 1271.5657552083333,
+        "bottleneck": "weight",
+        "compute_time_s": 3.3083799908214775e-06,
+        "weight_time_s": 0.000786432,
+        "kv_time_s": 7.419169811320754e-06
+      },
+      "1024": {
+        "tokens_per_sec": 1271.5657552083333,
+        "bottleneck": "weight",
+        "compute_time_s": 3.42868471776044e-06,
+        "weight_time_s": 0.000786432,
+        "kv_time_s": 1.4838339622641509e-05
+      },
+      "2048": {
+        "tokens_per_sec": 1271.5657552083333,
+        "bottleneck": "weight",
+        "compute_time_s": 3.669294171638366e-06,
+        "weight_time_s": 0.000786432,
+        "kv_time_s": 2.9676679245283017e-05
+      },
+      "4096": {
+        "tokens_per_sec": 1271.5657552083333,
+        "bottleneck": "weight",
+        "compute_time_s": 4.150513079394218e-06,
+        "weight_time_s": 0.000786432,
+        "kv_time_s": 5.9353358490566035e-05
+      }
+    },
+    "MI300X trit-w/int4-a (hypothetical)": {
+      "128": {
+        "tokens_per_sec": 12715.657552083334,
+        "bottleneck": "weight",
+        "compute_time_s": 1.6090141879230564e-06,
+        "weight_time_s": 7.86432e-05,
+        "kv_time_s": 4.6369811320754715e-07
+      },
+      "512": {
+        "tokens_per_sec": 12715.657552083334,
+        "bottleneck": "weight",
+        "compute_time_s": 1.6541267352480018e-06,
+        "weight_time_s": 7.86432e-05,
+        "kv_time_s": 1.8547924528301886e-06
+      },
+      "1024": {
+        "tokens_per_sec": 12715.657552083334,
+        "bottleneck": "weight",
+        "compute_time_s": 1.7142767983479291e-06,
+        "weight_time_s": 7.86432e-05,
+        "kv_time_s": 3.709584905660377e-06
+      },
+      "2048": {
+        "tokens_per_sec": 12715.657552083334,
+        "bottleneck": "weight",
+        "compute_time_s": 1.834576924547784e-06,
+        "weight_time_s": 7.86432e-05,
+        "kv_time_s": 7.419169811320754e-06
+      },
+      "4096": {
+        "tokens_per_sec": 12715.657552083334,
+        "bottleneck": "weight",
+        "compute_time_s": 2.075177176947493e-06,
+        "weight_time_s": 7.86432e-05,
+        "kv_time_s": 1.4838339622641509e-05
+      }
+    },
+    "TH100 drop-in ternary": {
+      "128": {
+        "tokens_per_sec": 8037.25524518475,
+        "bottleneck": "weight",
+        "compute_time_s": 3.0976398709168216e-07,
+        "weight_time_s": 0.00012442058507462685,
+        "kv_time_s": 7.336119402985075e-07
+      },
+      "512": {
+        "tokens_per_sec": 8037.25524518475,
+        "bottleneck": "weight",
+        "compute_time_s": 3.346396415574696e-07,
+        "weight_time_s": 0.00012442058507462685,
+        "kv_time_s": 2.93444776119403e-06
+      },
+      "1024": {
+        "tokens_per_sec": 8037.25524518475,
+        "bottleneck": "weight",
+        "compute_time_s": 3.678071808451863e-07,
+        "weight_time_s": 0.00012442058507462685,
+        "kv_time_s": 5.86889552238806e-06
+      },
+      "2048": {
+        "tokens_per_sec": 8037.25524518475,
+        "bottleneck": "weight",
+        "compute_time_s": 4.3414225942061955e-07,
+        "weight_time_s": 0.00012442058507462685,
+        "kv_time_s": 1.173779104477612e-05
+      },
+      "4096": {
+        "tokens_per_sec": 8037.25524518475,
+        "bottleneck": "weight",
+        "compute_time_s": 5.668124165714861e-07,
+        "weight_time_s": 0.00012442058507462685,
+        "kv_time_s": 2.347558208955224e-05
+      }
+    },
+    "TPB purpose-built ternary": {
+      "128": {
+        "tokens_per_sec": 239918.06702044024,
+        "bottleneck": "weight",
+        "compute_time_s": 3.0976398709168216e-07,
+        "weight_time_s": 4.1680896e-06,
+        "kv_time_s": 7.336119402985075e-07
+      },
+      "512": {
+        "tokens_per_sec": 239918.06702044024,
+        "bottleneck": "weight",
+        "compute_time_s": 3.346396415574696e-07,
+        "weight_time_s": 4.1680896e-06,
+        "kv_time_s": 2.93444776119403e-06
+      },
+      "1024": {
+        "tokens_per_sec": 170389.81119791666,
+        "bottleneck": "kv_cache",
+        "compute_time_s": 3.678071808451863e-07,
+        "weight_time_s": 4.1680896e-06,
+        "kv_time_s": 5.86889552238806e-06
+      },
+      "2048": {
+        "tokens_per_sec": 85194.90559895833,
+        "bottleneck": "kv_cache",
+        "compute_time_s": 4.3414225942061955e-07,
+        "weight_time_s": 4.1680896e-06,
+        "kv_time_s": 1.173779104477612e-05
+      },
+      "4096": {
+        "tokens_per_sec": 42597.452799479164,
+        "bottleneck": "kv_cache",
+        "compute_time_s": 5.668124165714861e-07,
+        "weight_time_s": 4.1680896e-06,
+        "kv_time_s": 2.347558208955224e-05
+      }
+    }
+  },
+  "8": {
+    "H100 fp16 baseline": {
+      "128": {
+        "tokens_per_sec": 51438.43356918239,
+        "bottleneck": "weight",
+        "compute_time_s": 4.252057806973219e-06,
+        "weight_time_s": 0.0001555257313432836,
+        "kv_time_s": 2.93444776119403e-06
+      },
+      "512": {
+        "tokens_per_sec": 51438.43356918239,
+        "bottleneck": "weight",
+        "compute_time_s": 4.371274381000505e-06,
+        "weight_time_s": 0.0001555257313432836,
+        "kv_time_s": 1.173779104477612e-05
+      },
+      "1024": {
+        "tokens_per_sec": 51438.43356918239,
+        "bottleneck": "weight",
+        "compute_time_s": 4.530229813036887e-06,
+        "weight_time_s": 0.0001555257313432836,
+        "kv_time_s": 2.347558208955224e-05
+      },
+      "2048": {
+        "tokens_per_sec": 51438.43356918239,
+        "bottleneck": "weight",
+        "compute_time_s": 4.848140677109651e-06,
+        "weight_time_s": 0.0001555257313432836,
+        "kv_time_s": 4.695116417910448e-05
+      },
+      "4096": {
+        "tokens_per_sec": 51438.43356918239,
+        "bottleneck": "weight",
+        "compute_time_s": 5.483962405255179e-06,
+        "weight_time_s": 0.0001555257313432836,
+        "kv_time_s": 9.390232835820896e-05
+      }
+    },
+    "H100 trit-w/int8-a (hypothetical)": {
+      "128": {
+        "tokens_per_sec": 514384.335691824,
+        "bottleneck": "weight",
+        "compute_time_s": 2.1260289034866094e-06,
+        "weight_time_s": 1.5552573134328357e-05,
+        "kv_time_s": 1.467223880597015e-06
+      },
+      "512": {
+        "tokens_per_sec": 514384.335691824,
+        "bottleneck": "weight",
+        "compute_time_s": 2.1856371905002525e-06,
+        "weight_time_s": 1.5552573134328357e-05,
+        "kv_time_s": 5.86889552238806e-06
+      },
+      "1024": {
+        "tokens_per_sec": 514384.335691824,
+        "bottleneck": "weight",
+        "compute_time_s": 2.2651149065184437e-06,
+        "weight_time_s": 1.5552573134328357e-05,
+        "kv_time_s": 1.173779104477612e-05
+      },
+      "2048": {
+        "tokens_per_sec": 340779.6223958333,
+        "bottleneck": "kv_cache",
+        "compute_time_s": 2.4240703385548256e-06,
+        "weight_time_s": 1.5552573134328357e-05,
+        "kv_time_s": 2.347558208955224e-05
+      },
+      "4096": {
+        "tokens_per_sec": 170389.81119791666,
+        "bottleneck": "kv_cache",
+        "compute_time_s": 2.7419812026275895e-06,
+        "weight_time_s": 1.5552573134328357e-05,
+        "kv_time_s": 4.695116417910448e-05
+      }
+    },
+    "H100 trit-w/int4-a (hypothetical)": {
+      "128": {
+        "tokens_per_sec": 514384.335691824,
+        "bottleneck": "weight",
+        "compute_time_s": 2.1260289034866094e-06,
+        "weight_time_s": 1.5552573134328357e-05,
+        "kv_time_s": 7.336119402985075e-07
+      },
+      "512": {
+        "tokens_per_sec": 514384.335691824,
+        "bottleneck": "weight",
+        "compute_time_s": 2.1856371905002525e-06,
+        "weight_time_s": 1.5552573134328357e-05,
+        "kv_time_s": 2.93444776119403e-06
+      },
+      "1024": {
+        "tokens_per_sec": 514384.335691824,
+        "bottleneck": "weight",
+        "compute_time_s": 2.2651149065184437e-06,
+        "weight_time_s": 1.5552573134328357e-05,
+        "kv_time_s": 5.86889552238806e-06
+      },
+      "2048": {
+        "tokens_per_sec": 514384.335691824,
+        "bottleneck": "weight",
+        "compute_time_s": 2.4240703385548256e-06,
+        "weight_time_s": 1.5552573134328357e-05,
+        "kv_time_s": 1.173779104477612e-05
+      },
+      "4096": {
+        "tokens_per_sec": 340779.6223958333,
+        "bottleneck": "kv_cache",
+        "compute_time_s": 2.7419812026275895e-06,
+        "weight_time_s": 1.5552573134328357e-05,
+        "kv_time_s": 2.347558208955224e-05
+      }
+    },
+    "MI300X fp16 baseline": {
+      "128": {
+        "tokens_per_sec": 81380.20833333333,
+        "bottleneck": "weight",
+        "compute_time_s": 3.2181514456172557e-06,
+        "weight_time_s": 9.8304e-05,
+        "kv_time_s": 1.8547924528301886e-06
+      },
+      "512": {
+        "tokens_per_sec": 81380.20833333333,
+        "bottleneck": "weight",
+        "compute_time_s": 3.3083799908214775e-06,
+        "weight_time_s": 9.8304e-05,
+        "kv_time_s": 7.419169811320754e-06
+      },
+      "1024": {
+        "tokens_per_sec": 81380.20833333333,
+        "bottleneck": "weight",
+        "compute_time_s": 3.42868471776044e-06,
+        "weight_time_s": 9.8304e-05,
+        "kv_time_s": 1.4838339622641509e-05
+      },
+      "2048": {
+        "tokens_per_sec": 81380.20833333333,
+        "bottleneck": "weight",
+        "compute_time_s": 3.669294171638366e-06,
+        "weight_time_s": 9.8304e-05,
+        "kv_time_s": 2.9676679245283017e-05
+      },
+      "4096": {
+        "tokens_per_sec": 81380.20833333333,
+        "bottleneck": "weight",
+        "compute_time_s": 4.150513079394218e-06,
+        "weight_time_s": 9.8304e-05,
+        "kv_time_s": 5.9353358490566035e-05
+      }
+    },
+    "MI300X trit-w/int4-a (hypothetical)": {
+      "128": {
+        "tokens_per_sec": 813802.0833333334,
+        "bottleneck": "weight",
+        "compute_time_s": 1.6090141879230564e-06,
+        "weight_time_s": 9.8304e-06,
+        "kv_time_s": 4.6369811320754715e-07
+      },
+      "512": {
+        "tokens_per_sec": 813802.0833333334,
+        "bottleneck": "weight",
+        "compute_time_s": 1.6541267352480018e-06,
+        "weight_time_s": 9.8304e-06,
+        "kv_time_s": 1.8547924528301886e-06
+      },
+      "1024": {
+        "tokens_per_sec": 813802.0833333334,
+        "bottleneck": "weight",
+        "compute_time_s": 1.7142767983479291e-06,
+        "weight_time_s": 9.8304e-06,
+        "kv_time_s": 3.709584905660377e-06
+      },
+      "2048": {
+        "tokens_per_sec": 813802.0833333334,
+        "bottleneck": "weight",
+        "compute_time_s": 1.834576924547784e-06,
+        "weight_time_s": 9.8304e-06,
+        "kv_time_s": 7.419169811320754e-06
+      },
+      "4096": {
+        "tokens_per_sec": 539143.8802083334,
+        "bottleneck": "kv_cache",
+        "compute_time_s": 2.075177176947493e-06,
+        "weight_time_s": 9.8304e-06,
+        "kv_time_s": 1.4838339622641509e-05
+      }
+    },
+    "TH100 drop-in ternary": {
+      "128": {
+        "tokens_per_sec": 514384.335691824,
+        "bottleneck": "weight",
+        "compute_time_s": 3.0976398709168216e-07,
+        "weight_time_s": 1.5552573134328357e-05,
+        "kv_time_s": 7.336119402985075e-07
+      },
+      "512": {
+        "tokens_per_sec": 514384.335691824,
+        "bottleneck": "weight",
+        "compute_time_s": 3.346396415574696e-07,
+        "weight_time_s": 1.5552573134328357e-05,
+        "kv_time_s": 2.93444776119403e-06
+      },
+      "1024": {
+        "tokens_per_sec": 514384.335691824,
+        "bottleneck": "weight",
+        "compute_time_s": 3.678071808451863e-07,
+        "weight_time_s": 1.5552573134328357e-05,
+        "kv_time_s": 5.86889552238806e-06
+      },
+      "2048": {
+        "tokens_per_sec": 514384.335691824,
+        "bottleneck": "weight",
+        "compute_time_s": 4.3414225942061955e-07,
+        "weight_time_s": 1.5552573134328357e-05,
+        "kv_time_s": 1.173779104477612e-05
+      },
+      "4096": {
+        "tokens_per_sec": 340779.6223958333,
+        "bottleneck": "kv_cache",
+        "compute_time_s": 5.668124165714861e-07,
+        "weight_time_s": 1.5552573134328357e-05,
+        "kv_time_s": 2.347558208955224e-05
+      }
+    },
+    "TPB purpose-built ternary": {
+      "128": {
+        "tokens_per_sec": 10904947.916666666,
+        "bottleneck": "kv_cache",
+        "compute_time_s": 3.0976398709168216e-07,
+        "weight_time_s": 5.210112e-07,
+        "kv_time_s": 7.336119402985075e-07
+      },
+      "512": {
+        "tokens_per_sec": 2726236.9791666665,
+        "bottleneck": "kv_cache",
+        "compute_time_s": 3.346396415574696e-07,
+        "weight_time_s": 5.210112e-07,
+        "kv_time_s": 2.93444776119403e-06
+      },
+      "1024": {
+        "tokens_per_sec": 1363118.4895833333,
+        "bottleneck": "kv_cache",
+        "compute_time_s": 3.678071808451863e-07,
+        "weight_time_s": 5.210112e-07,
+        "kv_time_s": 5.86889552238806e-06
+      },
+      "2048": {
+        "tokens_per_sec": 681559.2447916666,
+        "bottleneck": "kv_cache",
+        "compute_time_s": 4.3414225942061955e-07,
+        "weight_time_s": 5.210112e-07,
+        "kv_time_s": 1.173779104477612e-05
+      },
+      "4096": {
+        "tokens_per_sec": 340779.6223958333,
+        "bottleneck": "kv_cache",
+        "compute_time_s": 5.668124165714861e-07,
+        "weight_time_s": 5.210112e-07,
+        "kv_time_s": 2.347558208955224e-05
+      }
+    }
+  },
+  "32": {
+    "H100 fp16 baseline": {
+      "128": {
+        "tokens_per_sec": 823014.9371069182,
+        "bottleneck": "weight",
+        "compute_time_s": 4.252057806973219e-06,
+        "weight_time_s": 3.88814328358209e-05,
+        "kv_time_s": 2.93444776119403e-06
+      },
+      "512": {
+        "tokens_per_sec": 823014.9371069182,
+        "bottleneck": "weight",
+        "compute_time_s": 4.371274381000505e-06,
+        "weight_time_s": 3.88814328358209e-05,
+        "kv_time_s": 1.173779104477612e-05
+      },
+      "1024": {
+        "tokens_per_sec": 823014.9371069182,
+        "bottleneck": "weight",
+        "compute_time_s": 4.530229813036887e-06,
+        "weight_time_s": 3.88814328358209e-05,
+        "kv_time_s": 2.347558208955224e-05
+      },
+      "2048": {
+        "tokens_per_sec": 681559.2447916666,
+        "bottleneck": "kv_cache",
+        "compute_time_s": 4.848140677109651e-06,
+        "weight_time_s": 3.88814328358209e-05,
+        "kv_time_s": 4.695116417910448e-05
+      },
+      "4096": {
+        "tokens_per_sec": 340779.6223958333,
+        "bottleneck": "kv_cache",
+        "compute_time_s": 5.483962405255179e-06,
+        "weight_time_s": 3.88814328358209e-05,
+        "kv_time_s": 9.390232835820896e-05
+      }
+    },
+    "H100 trit-w/int8-a (hypothetical)": {
+      "128": {
+        "tokens_per_sec": 8230149.371069184,
+        "bottleneck": "weight",
+        "compute_time_s": 2.1260289034866094e-06,
+        "weight_time_s": 3.888143283582089e-06,
+        "kv_time_s": 1.467223880597015e-06
+      },
+      "512": {
+        "tokens_per_sec": 5452473.958333333,
+        "bottleneck": "kv_cache",
+        "compute_time_s": 2.1856371905002525e-06,
+        "weight_time_s": 3.888143283582089e-06,
+        "kv_time_s": 5.86889552238806e-06
+      },
+      "1024": {
+        "tokens_per_sec": 2726236.9791666665,
+        "bottleneck": "kv_cache",
+        "compute_time_s": 2.2651149065184437e-06,
+        "weight_time_s": 3.888143283582089e-06,
+        "kv_time_s": 1.173779104477612e-05
+      },
+      "2048": {
+        "tokens_per_sec": 1363118.4895833333,
+        "bottleneck": "kv_cache",
+        "compute_time_s": 2.4240703385548256e-06,
+        "weight_time_s": 3.888143283582089e-06,
+        "kv_time_s": 2.347558208955224e-05
+      },
+      "4096": {
+        "tokens_per_sec": 681559.2447916666,
+        "bottleneck": "kv_cache",
+        "compute_time_s": 2.7419812026275895e-06,
+        "weight_time_s": 3.888143283582089e-06,
+        "kv_time_s": 4.695116417910448e-05
+      }
+    },
+    "H100 trit-w/int4-a (hypothetical)": {
+      "128": {
+        "tokens_per_sec": 8230149.371069184,
+        "bottleneck": "weight",
+        "compute_time_s": 2.1260289034866094e-06,
+        "weight_time_s": 3.888143283582089e-06,
+        "kv_time_s": 7.336119402985075e-07
+      },
+      "512": {
+        "tokens_per_sec": 8230149.371069184,
+        "bottleneck": "weight",
+        "compute_time_s": 2.1856371905002525e-06,
+        "weight_time_s": 3.888143283582089e-06,
+        "kv_time_s": 2.93444776119403e-06
+      },
+      "1024": {
+        "tokens_per_sec": 5452473.958333333,
+        "bottleneck": "kv_cache",
+        "compute_time_s": 2.2651149065184437e-06,
+        "weight_time_s": 3.888143283582089e-06,
+        "kv_time_s": 5.86889552238806e-06
+      },
+      "2048": {
+        "tokens_per_sec": 2726236.9791666665,
+        "bottleneck": "kv_cache",
+        "compute_time_s": 2.4240703385548256e-06,
+        "weight_time_s": 3.888143283582089e-06,
+        "kv_time_s": 1.173779104477612e-05
+      },
+      "4096": {
+        "tokens_per_sec": 1363118.4895833333,
+        "bottleneck": "kv_cache",
+        "compute_time_s": 2.7419812026275895e-06,
+        "weight_time_s": 3.888143283582089e-06,
+        "kv_time_s": 2.347558208955224e-05
+      }
+    },
+    "MI300X fp16 baseline": {
+      "128": {
+        "tokens_per_sec": 1302083.3333333333,
+        "bottleneck": "weight",
+        "compute_time_s": 3.2181514456172557e-06,
+        "weight_time_s": 2.4576e-05,
+        "kv_time_s": 1.8547924528301886e-06
+      },
+      "512": {
+        "tokens_per_sec": 1302083.3333333333,
+        "bottleneck": "weight",
+        "compute_time_s": 3.3083799908214775e-06,
+        "weight_time_s": 2.4576e-05,
+        "kv_time_s": 7.419169811320754e-06
+      },
+      "1024": {
+        "tokens_per_sec": 1302083.3333333333,
+        "bottleneck": "weight",
+        "compute_time_s": 3.42868471776044e-06,
+        "weight_time_s": 2.4576e-05,
+        "kv_time_s": 1.4838339622641509e-05
+      },
+      "2048": {
+        "tokens_per_sec": 1078287.7604166667,
+        "bottleneck": "kv_cache",
+        "compute_time_s": 3.669294171638366e-06,
+        "weight_time_s": 2.4576e-05,
+        "kv_time_s": 2.9676679245283017e-05
+      },
+      "4096": {
+        "tokens_per_sec": 539143.8802083334,
+        "bottleneck": "kv_cache",
+        "compute_time_s": 4.150513079394218e-06,
+        "weight_time_s": 2.4576e-05,
+        "kv_time_s": 5.9353358490566035e-05
+      }
+    },
+    "MI300X trit-w/int4-a (hypothetical)": {
+      "128": {
+        "tokens_per_sec": 13020833.333333334,
+        "bottleneck": "weight",
+        "compute_time_s": 1.6090141879230564e-06,
+        "weight_time_s": 2.4576e-06,
+        "kv_time_s": 4.6369811320754715e-07
+      },
+      "512": {
+        "tokens_per_sec": 13020833.333333334,
+        "bottleneck": "weight",
+        "compute_time_s": 1.6541267352480018e-06,
+        "weight_time_s": 2.4576e-06,
+        "kv_time_s": 1.8547924528301886e-06
+      },
+      "1024": {
+        "tokens_per_sec": 8626302.083333334,
+        "bottleneck": "kv_cache",
+        "compute_time_s": 1.7142767983479291e-06,
+        "weight_time_s": 2.4576e-06,
+        "kv_time_s": 3.709584905660377e-06
+      },
+      "2048": {
+        "tokens_per_sec": 4313151.041666667,
+        "bottleneck": "kv_cache",
+        "compute_time_s": 1.834576924547784e-06,
+        "weight_time_s": 2.4576e-06,
+        "kv_time_s": 7.419169811320754e-06
+      },
+      "4096": {
+        "tokens_per_sec": 2156575.5208333335,
+        "bottleneck": "kv_cache",
+        "compute_time_s": 2.075177176947493e-06,
+        "weight_time_s": 2.4576e-06,
+        "kv_time_s": 1.4838339622641509e-05
+      }
+    },
+    "TH100 drop-in ternary": {
+      "128": {
+        "tokens_per_sec": 8230149.371069184,
+        "bottleneck": "weight",
+        "compute_time_s": 3.0976398709168216e-07,
+        "weight_time_s": 3.888143283582089e-06,
+        "kv_time_s": 7.336119402985075e-07
+      },
+      "512": {
+        "tokens_per_sec": 8230149.371069184,
+        "bottleneck": "weight",
+        "compute_time_s": 3.346396415574696e-07,
+        "weight_time_s": 3.888143283582089e-06,
+        "kv_time_s": 2.93444776119403e-06
+      },
+      "1024": {
+        "tokens_per_sec": 5452473.958333333,
+        "bottleneck": "kv_cache",
+        "compute_time_s": 3.678071808451863e-07,
+        "weight_time_s": 3.888143283582089e-06,
+        "kv_time_s": 5.86889552238806e-06
+      },
+      "2048": {
+        "tokens_per_sec": 2726236.9791666665,
+        "bottleneck": "kv_cache",
+        "compute_time_s": 4.3414225942061955e-07,
+        "weight_time_s": 3.888143283582089e-06,
+        "kv_time_s": 1.173779104477612e-05
+      },
+      "4096": {
+        "tokens_per_sec": 1363118.4895833333,
+        "bottleneck": "kv_cache",
+        "compute_time_s": 5.668124165714861e-07,
+        "weight_time_s": 3.888143283582089e-06,
+        "kv_time_s": 2.347558208955224e-05
+      }
+    },
+    "TPB purpose-built ternary": {
+      "128": {
+        "tokens_per_sec": 43619791.666666664,
+        "bottleneck": "kv_cache",
+        "compute_time_s": 3.0976398709168216e-07,
+        "weight_time_s": 1.302528e-07,
+        "kv_time_s": 7.336119402985075e-07
+      },
+      "512": {
+        "tokens_per_sec": 10904947.916666666,
+        "bottleneck": "kv_cache",
+        "compute_time_s": 3.346396415574696e-07,
+        "weight_time_s": 1.302528e-07,
+        "kv_time_s": 2.93444776119403e-06
+      },
+      "1024": {
+        "tokens_per_sec": 5452473.958333333,
+        "bottleneck": "kv_cache",
+        "compute_time_s": 3.678071808451863e-07,
+        "weight_time_s": 1.302528e-07,
+        "kv_time_s": 5.86889552238806e-06
+      },
+      "2048": {
+        "tokens_per_sec": 2726236.9791666665,
+        "bottleneck": "kv_cache",
+        "compute_time_s": 4.3414225942061955e-07,
+        "weight_time_s": 1.302528e-07,
+        "kv_time_s": 1.173779104477612e-05
+      },
+      "4096": {
+        "tokens_per_sec": 1363118.4895833333,
+        "bottleneck": "kv_cache",
+        "compute_time_s": 5.668124165714861e-07,
+        "weight_time_s": 1.302528e-07,
+        "kv_time_s": 2.347558208955224e-05
+      }
+    }
+  }
+}

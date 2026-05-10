@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 1: BitNet Gate-Count Analysis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,700;9..144,900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0f;
+    --paper: #15151a;
+    --ink: #f5f0e6;
+    --dim: #807a6d;
+    --faint: #2c2820;
+    --rule: #28241e;
+    --binary: #ff6347;
+    --ternary: #5dffaa;
+    --highlight: #ffd166;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Fraunces', serif;
+    font-feature-settings: 'ss01';
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .frame {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 60px 50px 100px;
+  }
+  .badge {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--ternary);
+    border: 1px solid var(--ternary);
+    padding: 6px 12px;
+    margin-bottom: 30px;
+  }
+  h1 {
+    font-size: clamp(56px, 7vw, 112px);
+    font-weight: 900;
+    line-height: 0.92;
+    letter-spacing: -0.04em;
+    margin-bottom: 24px;
+  }
+  h1 em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--ternary);
+  }
+  .lede {
+    font-size: 22px;
+    line-height: 1.5;
+    max-width: 880px;
+    color: var(--ink);
+    margin-bottom: 24px;
+  }
+  .meta-line {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--dim);
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 30px;
+    margin-bottom: 60px;
+  }
+
+  /* Headline metrics */
+  .headline-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    border: 1px solid var(--rule);
+    margin-bottom: 80px;
+  }
+  @media (max-width: 800px) {
+    .headline-grid { grid-template-columns: 1fr; }
+  }
+  .headline-cell {
+    padding: 50px 40px;
+    border-right: 1px solid var(--rule);
+    background: var(--paper);
+  }
+  .headline-cell:last-child { border-right: 0; }
+  @media (max-width: 800px) {
+    .headline-cell { border-right: 0; border-bottom: 1px solid var(--rule); }
+    .headline-cell:last-child { border-bottom: 0; }
+  }
+  .h-value {
+    font-size: 88px;
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: var(--ternary);
+    margin-bottom: 12px;
+  }
+  .h-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--dim);
+    margin-bottom: 16px;
+  }
+  .h-text {
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--ink);
+  }
+
+  /* Section header */
+  .section {
+    margin-bottom: 80px;
+  }
+  .s-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--dim);
+    margin-bottom: 14px;
+  }
+  .s-title {
+    font-size: 44px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    margin-bottom: 30px;
+  }
+  .s-title em { font-style: italic; font-weight: 400; color: var(--ternary); }
+
+  /* Per-component table */
+  .breakdown {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    padding: 36px;
+  }
+  .b-row {
+    display: grid;
+    grid-template-columns: 36px 1fr 80px 130px 60px;
+    gap: 16px;
+    align-items: center;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--faint);
+    font-size: 14px;
+  }
+  .b-row:last-child { border-bottom: 0; }
+  .b-row.header {
+    border-bottom: 1px solid var(--rule);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--dim);
+    padding-bottom: 16px;
+    margin-bottom: 4px;
+  }
+  .b-rank {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--dim);
+    text-align: center;
+  }
+  .b-name {
+    font-size: 17px;
+    font-weight: 500;
+  }
+  .b-tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    color: var(--ternary);
+    border: 1px solid var(--ternary);
+    padding: 2px 8px;
+    margin-left: 12px;
+    vertical-align: middle;
+  }
+  .b-bar {
+    height: 6px;
+    background: var(--faint);
+    border-radius: 0;
+    overflow: hidden;
+    position: relative;
+  }
+  .b-bar-fill {
+    height: 100%;
+    background: var(--ternary);
+  }
+  .b-pct {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--dim);
+    text-align: right;
+  }
+  .b-ratio {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ternary);
+    text-align: right;
+  }
+  .b-ratio.weak { color: var(--dim); font-weight: 400; }
+
+  /* Scaling chart */
+  .scaling-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 50px;
+    align-items: center;
+  }
+  @media (max-width: 800px) {
+    .scaling-grid { grid-template-columns: 1fr; }
+  }
+  .chart-box {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    padding: 40px;
+    height: 380px;
+    position: relative;
+  }
+  .chart-box svg { width: 100%; height: 100%; overflow: visible; }
+  .scaling-text { font-size: 17px; line-height: 1.55; color: var(--ink); }
+  .scaling-text p { margin-bottom: 18px; }
+  .scaling-text b { color: var(--ternary); font-weight: 500; }
+  .scaling-text em { color: var(--highlight); font-style: italic; }
+
+  /* Footer / take-home */
+  .takehome {
+    background: var(--paper);
+    border: 1px solid var(--ternary);
+    padding: 60px;
+    margin-top: 60px;
+    text-align: center;
+  }
+  .t-num {
+    font-size: 200px;
+    font-weight: 900;
+    line-height: 0.85;
+    letter-spacing: -0.06em;
+    color: var(--ternary);
+    margin-bottom: 16px;
+  }
+  .t-num span {
+    font-size: 90px;
+    color: var(--dim);
+    font-weight: 400;
+  }
+  .t-text {
+    font-size: 22px;
+    color: var(--ink);
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  footer {
+    margin-top: 80px;
+    padding-top: 30px;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--dim);
+  }
+</style>
+</head>
+<body>
+
+<div class="frame">
+  <div class="badge">Phase 1 · Research Result · 2026</div>
+  <h1>How <em>much</em><br>does ternary win?</h1>
+  <p class="lede">
+    A gate-level analysis of one decoder layer of Microsoft's BitNet b1.58 2B4T,
+    comparing fp16 binary inference against hypothetical native trit-weighted
+    ternary hardware. The first public end-to-end measurement at this granularity.
+  </p>
+  <div class="meta-line">
+    Model: BitNet b1.58 2B4T · 2.4B params · 30 layers · 4096 ctx · LLaMA-3 tokenizer
+  </div>
+
+  <!-- Headline metrics -->
+  <div class="headline-grid">
+    <div class="headline-cell">
+      <div class="h-label">Best case</div>
+      <div class="h-value">9.40<span style="font-size: 50px;">×</span></div>
+      <div class="h-text">
+        At sequence length 128. Ternary hardware reduces per-layer gate
+        operations from 2.07 trillion to 220 billion.
+      </div>
+    </div>
+    <div class="headline-cell">
+      <div class="h-label">Realistic inference</div>
+      <div class="h-value">6.72<span style="font-size: 50px;">×</span></div>
+      <div class="h-text">
+        At 2048 tokens — the typical context for chat and code.
+        37.7T → 5.6T gates per layer.
+      </div>
+    </div>
+    <div class="headline-cell">
+      <div class="h-label">Long-context floor</div>
+      <div class="h-value">5.44<span style="font-size: 50px;">×</span></div>
+      <div class="h-text">
+        At maximum 4096 tokens. Attention dominates at long sequences,
+        diluting ternary's projection-layer advantage.
+      </div>
+    </div>
+  </div>
+
+  <!-- Per-component breakdown -->
+  <div class="section">
+    <div class="s-tag">PER-COMPONENT BREAKDOWN · SEQ_LEN = 2048</div>
+    <h2 class="s-title">Where ternary <em>actually</em> wins.</h2>
+    <p style="font-size: 17px; max-width: 800px; color: var(--dim); margin-bottom: 30px;">
+      96% of the advantage comes from four operations: the BitLinear projections.
+      Everything else clusters at the generic int8-vs-fp16 ratio (~2-3×).
+    </p>
+
+    <div class="breakdown">
+      <div class="b-row header">
+        <div></div>
+        <div>Component</div>
+        <div style="text-align: right;">% binary</div>
+        <div></div>
+        <div style="text-align: right;">Ratio</div>
+      </div>
+      <div id="breakdown-rows"></div>
+    </div>
+  </div>
+
+  <!-- Scaling chart -->
+  <div class="section">
+    <div class="s-tag">SCALING WITH SEQUENCE LENGTH</div>
+    <h2 class="s-title">The advantage <em>shrinks</em> as context grows.</h2>
+
+    <div class="scaling-grid">
+      <div class="chart-box">
+        <svg viewBox="0 0 600 300" id="scaling-svg"></svg>
+      </div>
+      <div class="scaling-text">
+        <p>
+          The four BitLinear projections scale as <b>O(L · d²)</b> where L is
+          sequence length and d is hidden size. Attention scales as
+          <b>O(L² · d)</b>. So the ratio of attention to projection cost
+          grows as <b>L/d</b>.
+        </p>
+        <p>
+          At short sequences (L=128 ≪ d=2560), BitLinear dominates and ternary
+          wins by <b>9.4×</b>. At long sequences, attention catches up;
+          attention isn't trit-weighted (both operands are activations), so
+          ternary loses its edge.
+        </p>
+        <p>
+          <em>Implication:</em> ternary hardware should target prefill-heavy
+          workloads first — RAG, classification, embeddings, code completion —
+          and a future generation of accelerators will need to invest in
+          attention-specific optimizations to preserve the advantage at long
+          contexts.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Take-home -->
+  <div class="takehome">
+    <div class="t-num">~6×<span></span></div>
+    <p class="t-text">
+      Headline number for purpose-built BitNet inference hardware
+      at realistic sequence lengths. After accounting for ternary
+      gates being ~25% slower per switch, this translates to
+      <b style="color: var(--ternary);">~3-5× area or energy advantage</b>
+      in real silicon — transformative for inference economics.
+    </p>
+  </div>
+
+  <footer>
+    <span>BITNET b1.58 2B4T · 30 LAYERS · ONE-LAYER ANALYSIS</span>
+    <span>FP16 BASELINE · TRIT WEIGHTS · INT8 ACTIVATIONS</span>
+    <span>· − 0 + ·</span>
+  </footer>
+</div>
+
+<script>
+  // Per-component data at L=2048
+  const COMPONENTS = [
+    { name: "FFN up + gate",      ratio: 9.71, pct: 44.2, trit: true },
+    { name: "FFN down",           ratio: 9.72, pct: 22.1, trit: true },
+    { name: "QKV projection",     ratio: 9.71, pct: 12.3, trit: true },
+    { name: "Attention output",   ratio: 9.71, pct:  8.2, trit: true },
+    { name: "Attention Q·K^T",    ratio: 2.21, pct:  6.5, trit: false },
+    { name: "Attention scores·V", ratio: 2.21, pct:  6.5, trit: false },
+    { name: "RMSNorm (×2)",       ratio: 2.72, pct:  0.0, trit: false },
+    { name: "Softmax",            ratio: 5.32, pct:  0.1, trit: false },
+    { name: "RoPE",               ratio: 2.26, pct:  0.0, trit: false },
+    { name: "FFN activation",     ratio: 2.26, pct:  0.0, trit: false },
+    { name: "Residuals",          ratio: 2.00, pct:  0.0, trit: false },
+  ];
+
+  const container = document.getElementById('breakdown-rows');
+  const maxPct = Math.max(...COMPONENTS.map(c => c.pct));
+  COMPONENTS.forEach((c, i) => {
+    const row = document.createElement('div');
+    row.className = 'b-row';
+    const fillPct = (c.pct / maxPct) * 100;
+    const tagHtml = c.trit ? '<span class="b-tag">TRIT</span>' : '';
+    const ratioClass = c.trit ? '' : 'weak';
+    row.innerHTML = `
+      <div class="b-rank">${String(i+1).padStart(2,'0')}</div>
+      <div class="b-name">${c.name}${tagHtml}</div>
+      <div class="b-pct">${c.pct.toFixed(1)}%</div>
+      <div class="b-bar"><div class="b-bar-fill" style="width: ${fillPct}%;"></div></div>
+      <div class="b-ratio ${ratioClass}">${c.ratio.toFixed(2)}×</div>
+    `;
+    container.appendChild(row);
+  });
+
+  // Scaling chart
+  const SCALING = [
+    { L:  128, speedup: 9.40 },
+    { L:  512, speedup: 8.64 },
+    { L: 1024, speedup: 7.84 },
+    { L: 2048, speedup: 6.72 },
+    { L: 4096, speedup: 5.44 },
+  ];
+
+  const svg = document.getElementById('scaling-svg');
+  const W = 600, H = 300;
+  const PAD = { l: 60, r: 30, t: 30, b: 50 };
+  const innerW = W - PAD.l - PAD.r;
+  const innerH = H - PAD.t - PAD.b;
+
+  // Log-x scale for L, linear y for speedup
+  const xs = SCALING.map(d => Math.log2(d.L));
+  const xMin = Math.min(...xs), xMax = Math.max(...xs);
+  const xScale = x => PAD.l + ((x - xMin) / (xMax - xMin)) * innerW;
+  const yMin = 0, yMax = 10;
+  const yScale = v => PAD.t + innerH - ((v - yMin) / (yMax - yMin)) * innerH;
+
+  let html = '';
+
+  // Y gridlines
+  [2, 4, 6, 8, 10].forEach(v => {
+    const y = yScale(v);
+    html += `<line x1="${PAD.l}" x2="${W-PAD.r}" y1="${y}" y2="${y}"
+                   stroke="#28241e" stroke-width="1"/>`;
+    html += `<text x="${PAD.l-8}" y="${y+4}" text-anchor="end"
+                   font-family="'JetBrains Mono'" font-size="10" fill="#807a6d">${v}×</text>`;
+  });
+
+  // X labels
+  SCALING.forEach(d => {
+    const x = xScale(Math.log2(d.L));
+    html += `<text x="${x}" y="${H-PAD.b+20}" text-anchor="middle"
+                   font-family="'JetBrains Mono'" font-size="10" fill="#807a6d">${d.L}</text>`;
+  });
+  html += `<text x="${PAD.l + innerW/2}" y="${H-8}" text-anchor="middle"
+                 font-family="'JetBrains Mono'" font-size="10" letter-spacing="2" fill="#807a6d">SEQUENCE LENGTH</text>`;
+
+  // Area under curve
+  const areaPath = SCALING.map((d, i) =>
+    `${i===0 ? 'M' : 'L'} ${xScale(Math.log2(d.L))} ${yScale(d.speedup)}`).join(' ')
+    + ` L ${xScale(Math.log2(SCALING[SCALING.length-1].L))} ${yScale(0)}`
+    + ` L ${xScale(Math.log2(SCALING[0].L))} ${yScale(0)} Z`;
+  html += `<path d="${areaPath}" fill="#5dffaa" opacity="0.08"/>`;
+
+  // Line
+  const linePath = SCALING.map((d, i) =>
+    `${i===0 ? 'M' : 'L'} ${xScale(Math.log2(d.L))} ${yScale(d.speedup)}`).join(' ');
+  html += `<path d="${linePath}" fill="none" stroke="#5dffaa"
+                stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>`;
+
+  // Points + labels
+  SCALING.forEach((d, i) => {
+    const x = xScale(Math.log2(d.L));
+    const y = yScale(d.speedup);
+    html += `<circle cx="${x}" cy="${y}" r="6" fill="#0d0d0f" stroke="#5dffaa" stroke-width="2"/>`;
+    html += `<text x="${x}" y="${y-14}" text-anchor="middle"
+                   font-family="'JetBrains Mono'" font-size="13" font-weight="700"
+                   fill="#5dffaa">${d.speedup.toFixed(2)}×</text>`;
+  });
+
+  svg.innerHTML = html;
+</script>
+</body>
+</html>

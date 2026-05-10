@@ -1,0 +1,137 @@
+{
+  "H100 fp16": {
+    "128": {
+      "bl_bottleneck": "memory",
+      "attn_bottleneck": "memory",
+      "bl_intensity": 59.613356766256594
+    },
+    "512": {
+      "bl_bottleneck": "compute",
+      "attn_bottleneck": "memory",
+      "bl_intensity": 197.78425655976676
+    },
+    "1024": {
+      "bl_bottleneck": "compute",
+      "attn_bottleneck": "memory",
+      "bl_intensity": 322.28028503562945
+    },
+    "2048": {
+      "bl_bottleneck": "compute",
+      "attn_bottleneck": "memory",
+      "bl_intensity": 470.2946273830156
+    },
+    "4096": {
+      "bl_bottleneck": "compute",
+      "attn_bottleneck": "memory",
+      "bl_intensity": 610.4836895388077
+    }
+  },
+  "H100 trit+int4 (hyp.)": {
+    "128": {
+      "bl_bottleneck": "compute",
+      "attn_bottleneck": "compute",
+      "bl_intensity": 540.5577689243028
+    },
+    "512": {
+      "bl_bottleneck": "compute",
+      "attn_bottleneck": "compute",
+      "bl_intensity": 1474.7826086956522
+    },
+    "1024": {
+      "bl_bottleneck": "compute",
+      "attn_bottleneck": "compute",
+      "bl_intensity": 2071.4503816793895
+    },
+    "2048": {
+      "bl_bottleneck": "compute",
+      "attn_bottleneck": "compute",
+      "bl_intensity": 2596.7464114832537
+    },
+    "4096": {
+      "bl_bottleneck": "compute",
+      "attn_bottleneck": "compute",
+      "bl_intensity": 2973.8082191780823
+    }
+  },
+  "MI300X fp16": {
+    "128": {
+      "bl_bottleneck": "memory",
+      "attn_bottleneck": "memory",
+      "bl_intensity": 59.613356766256594
+    },
+    "512": {
+      "bl_bottleneck": "compute",
+      "attn_bottleneck": "memory",
+      "bl_intensity": 197.78425655976676
+    },
+    "1024": {
+      "bl_bottleneck": "compute",
+      "attn_bottleneck": "memory",
+      "bl_intensity": 322.28028503562945
+    },
+    "2048": {
+      "bl_bottleneck": "compute",
+      "attn_bottleneck": "memory",
+      "bl_intensity": 470.2946273830156
+    },
+    "4096": {
+      "bl_bottleneck": "compute",
+      "attn_bottleneck": "memory",
+      "bl_intensity": 610.4836895388077
+    }
+  },
+  "TH100 drop-in": {
+    "128": {
+      "bl_bottleneck": "memory",
+      "attn_bottleneck": "memory",
+      "bl_intensity": 540.5577689243028
+    },
+    "512": {
+      "bl_bottleneck": "memory",
+      "attn_bottleneck": "memory",
+      "bl_intensity": 1474.7826086956522
+    },
+    "1024": {
+      "bl_bottleneck": "compute",
+      "attn_bottleneck": "memory",
+      "bl_intensity": 2071.4503816793895
+    },
+    "2048": {
+      "bl_bottleneck": "compute",
+      "attn_bottleneck": "memory",
+      "bl_intensity": 2596.7464114832537
+    },
+    "4096": {
+      "bl_bottleneck": "compute",
+      "attn_bottleneck": "memory",
+      "bl_intensity": 2973.8082191780823
+    }
+  },
+  "TPB purpose-built": {
+    "128": {
+      "bl_bottleneck": "compute",
+      "attn_bottleneck": "memory",
+      "bl_intensity": 540.5577689243028
+    },
+    "512": {
+      "bl_bottleneck": "compute",
+      "attn_bottleneck": "memory",
+      "bl_intensity": 1474.7826086956522
+    },
+    "1024": {
+      "bl_bottleneck": "compute",
+      "attn_bottleneck": "memory",
+      "bl_intensity": 2071.4503816793895
+    },
+    "2048": {
+      "bl_bottleneck": "compute",
+      "attn_bottleneck": "memory",
+      "bl_intensity": 2596.7464114832537
+    },
+    "4096": {
+      "bl_bottleneck": "compute",
+      "attn_bottleneck": "memory",
+      "bl_intensity": 2973.8082191780823
+    }
+  }
+}

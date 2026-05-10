@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Binary vs Ternary: Gate-Count Benchmark</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0b;
+    --ink: #f4f0e6;
+    --ink-dim: #8a8275;
+    --ink-faint: #3a362e;
+    --binary: #ff5d3b;
+    --ternary: #6affae;
+    --rule: #2a2620;
+    --paper: #18161a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Fraunces', serif;
+    font-feature-settings: 'ss01', 'ss02';
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    background-image:
+      radial-gradient(1px 1px at 20% 30%, var(--ink-faint) 50%, transparent 50%),
+      radial-gradient(1px 1px at 70% 80%, var(--ink-faint) 50%, transparent 50%),
+      radial-gradient(1px 1px at 40% 60%, var(--ink-faint) 50%, transparent 50%);
+    background-size: 250px 250px, 320px 320px, 180px 180px;
+  }
+  .frame {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 60px 50px 100px;
+  }
+  header {
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 36px;
+    margin-bottom: 48px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 30px;
+    align-items: end;
+  }
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    margin-bottom: 18px;
+  }
+  h1 {
+    font-size: clamp(48px, 6vw, 96px);
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+  }
+  h1 em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--ternary);
+  }
+  .meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-dim);
+    text-align: right;
+    line-height: 1.7;
+  }
+  .meta b { color: var(--ink); font-weight: 500; }
+  .lede {
+    font-size: 22px;
+    line-height: 1.5;
+    max-width: 820px;
+    margin-bottom: 60px;
+    color: var(--ink);
+  }
+  .lede em.b { color: var(--binary); font-style: normal; font-weight: 600; }
+  .lede em.t { color: var(--ternary); font-style: normal; font-weight: 600; }
+
+  /* Charts */
+  .charts {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 50px;
+    margin-bottom: 80px;
+  }
+  @media (max-width: 900px) {
+    .charts { grid-template-columns: 1fr; }
+  }
+  .panel {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    padding: 36px 32px;
+    position: relative;
+  }
+  .panel-tag {
+    position: absolute;
+    top: -10px;
+    left: 32px;
+    background: var(--bg);
+    padding: 0 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--ink-dim);
+    text-transform: uppercase;
+  }
+  .panel h2 {
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin-bottom: 4px;
+  }
+  .panel .sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-dim);
+    margin-bottom: 28px;
+  }
+
+  /* Bars */
+  .bench-row {
+    display: grid;
+    grid-template-columns: 130px 1fr 70px;
+    gap: 14px;
+    align-items: center;
+    margin-bottom: 14px;
+    font-size: 14px;
+  }
+  .bench-row .label {
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    font-weight: 500;
+  }
+  .bench-row .label small {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--ink-dim);
+    letter-spacing: 0.1em;
+    display: block;
+    margin-top: 2px;
+  }
+  .bars {
+    height: 36px;
+    position: relative;
+    background: linear-gradient(to right,
+      transparent 0%, transparent 50%,
+      var(--ink-faint) 50%, var(--ink-faint) 50.5%,
+      transparent 50.5%);
+  }
+  .bar {
+    position: absolute;
+    height: 14px;
+    border-radius: 0;
+  }
+  .bar.binary { top: 3px; background: var(--binary); }
+  .bar.ternary { bottom: 3px; background: var(--ternary); }
+  .bar-value {
+    position: absolute;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--bg);
+    padding: 2px 5px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .bench-row .speedup {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    font-weight: 700;
+    text-align: right;
+  }
+  .speedup.win-t { color: var(--ternary); }
+  .speedup.win-b { color: var(--binary); }
+  .speedup small {
+    font-size: 9px;
+    color: var(--ink-dim);
+    display: block;
+    letter-spacing: 0.1em;
+    margin-top: 1px;
+    font-weight: 400;
+  }
+  .legend {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-dim);
+  }
+  .swatch {
+    display: inline-block;
+    width: 14px;
+    height: 8px;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+  .swatch.binary { background: var(--binary); }
+  .swatch.ternary { background: var(--ternary); }
+
+  /* Width selector */
+  .width-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 28px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .tab {
+    background: transparent;
+    border: 0;
+    color: var(--ink-dim);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 12px 16px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .tab:hover { color: var(--ink); }
+  .tab.active {
+    color: var(--ternary);
+    border-bottom-color: var(--ternary);
+  }
+
+  /* Neural net section */
+  .nn-panel {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    padding: 50px 50px 60px;
+    position: relative;
+    margin-bottom: 80px;
+  }
+  .nn-panel::before {
+    content: 'THE KILLER APP';
+    position: absolute;
+    top: -10px;
+    left: 50px;
+    background: var(--bg);
+    padding: 0 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--ternary);
+  }
+  .nn-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 50px;
+    align-items: center;
+  }
+  @media (max-width: 900px) {
+    .nn-grid { grid-template-columns: 1fr; }
+  }
+  .nn-headline {
+    font-size: 56px;
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    margin-bottom: 16px;
+  }
+  .nn-headline em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--ternary);
+  }
+  .nn-text {
+    color: var(--ink-dim);
+    font-size: 16px;
+    line-height: 1.6;
+  }
+  .nn-text b { color: var(--ink); font-weight: 500; }
+
+  .nn-chart {
+    position: relative;
+    height: 280px;
+  }
+  .nn-chart svg { width: 100%; height: 100%; overflow: visible; }
+  .nn-axis-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    fill: var(--ink-dim);
+    letter-spacing: 0.1em;
+  }
+  .nn-line { fill: none; stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
+  .nn-dot { stroke-width: 2; }
+
+  /* Verdict */
+  .verdict {
+    border-top: 1px solid var(--rule);
+    padding-top: 60px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+  }
+  @media (max-width: 900px) {
+    .verdict { grid-template-columns: 1fr; }
+  }
+  .verdict-cell {
+    padding: 0 36px;
+    border-right: 1px solid var(--rule);
+  }
+  .verdict-cell:last-child { border-right: 0; }
+  .verdict-cell:first-child { padding-left: 0; }
+  @media (max-width: 900px) {
+    .verdict-cell { border-right: 0; border-bottom: 1px solid var(--rule); padding: 30px 0; }
+    .verdict-cell:last-child { border-bottom: 0; }
+  }
+  .v-num {
+    font-size: 72px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    margin-bottom: 8px;
+  }
+  .v-num.t { color: var(--ternary); }
+  .v-num.b { color: var(--binary); }
+  .v-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    margin-bottom: 12px;
+  }
+  .v-text {
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--ink);
+  }
+
+  footer {
+    margin-top: 80px;
+    border-top: 1px solid var(--rule);
+    padding-top: 30px;
+    display: flex;
+    justify-content: space-between;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-dim);
+    letter-spacing: 0.15em;
+  }
+
+  /* Trit decoration */
+  .deco-trits {
+    position: fixed;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%) rotate(90deg);
+    transform-origin: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-faint);
+    letter-spacing: 0.5em;
+    pointer-events: none;
+    z-index: 0;
+  }
+  @media (max-width: 1200px) { .deco-trits { display: none; } }
+</style>
+</head>
+<body>
+
+<div class="deco-trits">+ 0 - + 0 - + 0 - + - 0 + 0 - + 0 -</div>
+
+<div class="frame">
+  <header>
+    <div>
+      <div class="eyebrow">Benchmark · Gate-count fairness · 2026</div>
+      <h1>Binary <em>vs</em><br>Ternary.</h1>
+    </div>
+    <div class="meta">
+      <b>Methodology</b><br>
+      Operations counted: NEG, MIN, MAX, SUM, CARRY (ternary) /<br>
+      AND, OR, XOR, NOT (binary). Same numerical range per pair.<br>
+      Lower = faster. Neural-net case: BitNet-style trit weights.
+    </div>
+  </header>
+
+  <p class="lede">
+    A balanced-ternary CPU and a binary CPU, the same problems, the same code,
+    the same numerical range. We count gate operations per task, the only metric
+    that matters at the silicon level. <em class="b">Binary</em> is mature and
+    forgiving. <em class="t">Ternary</em> wins where it counts.
+  </p>
+
+  <!-- Main bench -->
+  <div class="charts">
+    <div class="panel" id="general">
+      <div class="panel-tag">GENERAL ARITHMETIC</div>
+      <h2>Gates per operation</h2>
+      <div class="sub">// average over 500 random operands per workload</div>
+
+      <div class="width-tabs" id="tabs">
+        <button class="tab active" data-w="small">9 trit · 15 bit</button>
+        <button class="tab" data-w="medium">18 trit · 29 bit</button>
+        <button class="tab" data-w="large">27 trit · 43 bit</button>
+      </div>
+
+      <div class="legend">
+        <span><span class="swatch binary"></span>Binary</span>
+        <span><span class="swatch ternary"></span>Ternary</span>
+      </div>
+
+      <div id="bench-rows"></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-tag">WHY</div>
+      <h2>The structural reasons</h2>
+      <div class="sub">// not magic, just math</div>
+
+      <div style="display: flex; flex-direction: column; gap: 26px; margin-top: 30px;">
+        <div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px;
+            letter-spacing: 0.2em; color: var(--ternary); margin-bottom: 6px;">
+            DENSITY
+          </div>
+          <div style="font-size: 16px; line-height: 1.5;">
+            One trit holds <b style="color: var(--ternary);">log<sub>2</sub>(3) ≈ 1.58 bits</b>
+            of information. To cover the same numerical range, ternary needs
+            ~63% as many digits.
+          </div>
+        </div>
+        <div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px;
+            letter-spacing: 0.2em; color: var(--ternary); margin-bottom: 6px;">
+            FREE NEGATION
+          </div>
+          <div style="font-size: 16px; line-height: 1.5;">
+            Subtraction in binary needs two's complement: invert all bits, add one.
+            In balanced ternary, <b style="color: var(--ternary);">flip the sign of
+            each trit</b>. One gate per digit, in parallel, no carry chain.
+          </div>
+        </div>
+        <div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px;
+            letter-spacing: 0.2em; color: var(--ternary); margin-bottom: 6px;">
+            ZERO TRITS SKIP
+          </div>
+          <div style="font-size: 16px; line-height: 1.5;">
+            In multiplication, <b style="color: var(--ternary);">1/3 of trits are zero</b>
+            and contribute nothing. The hardware skips them. Binary skips half its
+            bits too, but starts with more digits.
+          </div>
+        </div>
+        <div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px;
+            letter-spacing: 0.2em; color: var(--binary); margin-bottom: 6px;">
+            BUT&hellip;
+          </div>
+          <div style="font-size: 16px; line-height: 1.5; color: var(--ink-dim);">
+            Distinguishing three voltage levels reliably costs ~25% per gate vs.
+            two levels. The tradeoff is real. The <b style="color: var(--ink);">net
+            advantage</b> is everything above, minus this.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Neural network panel -->
+  <div class="nn-panel">
+    <div class="nn-grid">
+      <div>
+        <div class="nn-headline">~6× <em>at scale.</em></div>
+        <p class="nn-text">
+          A neural-network dot product with <b>ternary weights</b> (BitNet b1.58)
+          is where the math turns brutal in ternary's favor. The "multiply" stops
+          being a multiplier and becomes a 3-way mux: skip, add, or subtract.
+          <br><br>
+          As vectors get longer, the gap widens. At 1024 elements ternary uses
+          <b style="color: var(--ternary);">~6× fewer gates</b> than binary for
+          the same dot product. This is why the Setun's logic might come back —
+          not as general-purpose CPUs, but as native AI accelerators.
+        </p>
+      </div>
+      <div class="nn-chart">
+        <svg viewBox="0 0 600 280" id="nn-svg" preserveAspectRatio="xMidYMid meet"></svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- Verdict -->
+  <div class="verdict">
+    <div class="verdict-cell">
+      <div class="v-label">Where binary wins</div>
+      <div class="v-num b">70 yrs</div>
+      <div class="v-text">
+        Manufacturing maturity, tooling, software, and economies of scale.
+        Every benchmark above measures architecture; in the real world, this
+        single dimension still dominates.
+      </div>
+    </div>
+    <div class="verdict-cell">
+      <div class="v-label">Where ternary wins</div>
+      <div class="v-num t">3.0×</div>
+      <div class="v-text">
+        Subtraction and comparison run roughly 3× cheaper. Free negation removes
+        the entire two's-complement tax. Ternary CPUs would have simpler,
+        smaller, lower-energy ALUs.
+      </div>
+    </div>
+    <div class="verdict-cell">
+      <div class="v-label">Where ternary destroys</div>
+      <div class="v-num t">~6×</div>
+      <div class="v-text">
+        Trit-weighted neural network inference. The killer app, the modern
+        BitNet b1.58 result, and the only domain where the workload itself
+        is shaped <em>exactly</em> like ternary hardware wants it to be.
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <span>SETUN · 1958 → 2026</span>
+    <span>9 TRITS · 729 WORDS · GATE-COUNTED</span>
+    <span>· − 0 + ·</span>
+  </footer>
+</div>
+
+<script>
+  // Benchmark data, embedded directly from benchmark.py output
+  const DATA = {
+    "small": {
+      "Addition":       { binary: 75.0,  ternary: 45.0,  speedup: 1.67 },
+      "Subtraction":    { binary: 165.0, ternary: 54.0,  speedup: 3.06 },
+      "Multiplication": { binary: 261.7, ternary: 158.2, speedup: 1.65 },
+      "Comparison":     { binary: 181.0, ternary: 55.8,  speedup: 3.24 }
+    },
+    "medium": {
+      "Addition":       { binary: 145.0,  ternary: 90.0,   speedup: 1.61 },
+      "Subtraction":    { binary: 319.0,  ternary: 108.0,  speedup: 2.95 },
+      "Multiplication": { binary: 1005.6, ternary: 607.7,  speedup: 1.65 },
+      "Comparison":     { binary: 349.0,  ternary: 109.8,  speedup: 3.18 }
+    },
+    "large": {
+      "Addition":       { binary: 215.0,  ternary: 135.0,  speedup: 1.59 },
+      "Subtraction":    { binary: 473.0,  ternary: 162.0,  speedup: 2.92 },
+      "Multiplication": { binary: 2277.1, ternary: 1372.3, speedup: 1.66 },
+      "Comparison":     { binary: 517.0,  ternary: 163.9,  speedup: 3.16 }
+    }
+  };
+
+  const SUBS = {
+    "Addition":       "single ripple-carry add",
+    "Subtraction":    "free in ternary (per-trit NEG)",
+    "Multiplication": "shift-and-add, 1/3 zeros skip",
+    "Comparison":     "3-way result is native"
+  };
+
+  const renderBars = (widthKey) => {
+    const data = DATA[widthKey];
+    const rows = Object.entries(data);
+    // Find the maximum value across all rows for scaling each individual bar pair
+    const container = document.getElementById('bench-rows');
+    container.innerHTML = '';
+
+    rows.forEach(([name, vals], idx) => {
+      const row = document.createElement('div');
+      row.className = 'bench-row';
+      row.style.opacity = '0';
+      row.style.transform = 'translateX(-20px)';
+
+      // Per-row scale: the larger of the two bars hits 100%
+      const maxVal = Math.max(vals.binary, vals.ternary);
+      const bPct = (vals.binary / maxVal) * 100;
+      const tPct = (vals.ternary / maxVal) * 100;
+
+      row.innerHTML = `
+        <div class="label">${name}<small>${SUBS[name]}</small></div>
+        <div class="bars">
+          <div class="bar binary" style="width: ${bPct}%;">
+            <span class="bar-value" style="left: ${Math.min(bPct - 2, 95)}%; transform: translateX(-100%); top: 0; padding-top: 1px;">${Math.round(vals.binary)}</span>
+          </div>
+          <div class="bar ternary" style="width: ${tPct}%;">
+            <span class="bar-value" style="left: ${Math.min(tPct - 2, 95)}%; transform: translateX(-100%); bottom: 0; padding-bottom: 1px;">${Math.round(vals.ternary)}</span>
+          </div>
+        </div>
+        <div class="speedup ${vals.speedup > 1 ? 'win-t' : 'win-b'}">
+          ${vals.speedup.toFixed(2)}×<small>${vals.speedup > 1 ? 'TERNARY' : 'BINARY'}</small>
+        </div>
+      `;
+      container.appendChild(row);
+      setTimeout(() => {
+        row.style.transition = 'opacity 0.5s, transform 0.5s';
+        row.style.opacity = '1';
+        row.style.transform = 'translateX(0)';
+      }, idx * 70);
+    });
+  };
+
+  // Tab switching
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      renderBars(tab.dataset.w);
+    });
+  });
+
+  // Initial render
+  renderBars('small');
+
+  // Neural net chart
+  const NN_DATA = [
+    { len: 16,   binary: 6048,   ternary: 1388,  speedup: 4.36 },
+    { len: 64,   binary: 27552,  ternary: 4697,  speedup: 5.87 },
+    { len: 256,  binary: 105824, ternary: 18520, speedup: 5.71 },
+    { len: 1024, binary: 416624, ternary: 68519, speedup: 6.08 }
+  ];
+
+  const renderNNChart = () => {
+    const svg = document.getElementById('nn-svg');
+    const W = 600, H = 280;
+    const PAD = { l: 60, r: 30, t: 30, b: 50 };
+    const innerW = W - PAD.l - PAD.r;
+    const innerH = H - PAD.t - PAD.b;
+
+    // Log-x scale for vector lengths
+    const xs = NN_DATA.map(d => Math.log2(d.len));
+    const xMin = Math.min(...xs), xMax = Math.max(...xs);
+    const xScale = x => PAD.l + ((x - xMin) / (xMax - xMin)) * innerW;
+
+    // Log-y scale for gate counts
+    const allVals = NN_DATA.flatMap(d => [d.binary, d.ternary]);
+    const yMin = Math.log10(Math.min(...allVals));
+    const yMax = Math.log10(Math.max(...allVals));
+    const yScale = v => PAD.t + innerH - ((Math.log10(v) - yMin) / (yMax - yMin)) * innerH;
+
+    let html = '';
+
+    // Grid lines
+    [10, 100, 1000, 10000, 100000, 1000000].forEach(v => {
+      if (Math.log10(v) >= yMin && Math.log10(v) <= yMax) {
+        const y = yScale(v);
+        html += `<line x1="${PAD.l}" x2="${W - PAD.r}" y1="${y}" y2="${y}"
+                       stroke="#2a2620" stroke-width="1"/>`;
+        const label = v >= 1000 ? `${v/1000}k` : v;
+        html += `<text x="${PAD.l - 8}" y="${y + 4}" text-anchor="end"
+                       class="nn-axis-label">${label}</text>`;
+      }
+    });
+
+    // X axis labels
+    NN_DATA.forEach(d => {
+      const x = xScale(Math.log2(d.len));
+      html += `<text x="${x}" y="${H - PAD.b + 18}" text-anchor="middle"
+                     class="nn-axis-label">${d.len}</text>`;
+    });
+    html += `<text x="${PAD.l + innerW/2}" y="${H - 8}" text-anchor="middle"
+                   class="nn-axis-label" style="letter-spacing: 0.2em;">VECTOR LENGTH</text>`;
+    html += `<text transform="translate(15, ${PAD.t + innerH/2}) rotate(-90)" text-anchor="middle"
+                   class="nn-axis-label" style="letter-spacing: 0.2em;">GATE OPS (LOG)</text>`;
+
+    // Lines
+    const binaryPath = NN_DATA.map((d, i) =>
+      `${i === 0 ? 'M' : 'L'} ${xScale(Math.log2(d.len))} ${yScale(d.binary)}`).join(' ');
+    const ternaryPath = NN_DATA.map((d, i) =>
+      `${i === 0 ? 'M' : 'L'} ${xScale(Math.log2(d.len))} ${yScale(d.ternary)}`).join(' ');
+
+    html += `<path d="${binaryPath}" class="nn-line" stroke="#ff5d3b"/>`;
+    html += `<path d="${ternaryPath}" class="nn-line" stroke="#6affae"/>`;
+
+    // Points + speedup labels
+    NN_DATA.forEach(d => {
+      const x = xScale(Math.log2(d.len));
+      html += `<circle cx="${x}" cy="${yScale(d.binary)}" r="5"
+                       fill="#0a0a0b" stroke="#ff5d3b" class="nn-dot"/>`;
+      html += `<circle cx="${x}" cy="${yScale(d.ternary)}" r="5"
+                       fill="#0a0a0b" stroke="#6affae" class="nn-dot"/>`;
+
+      // Speedup label between the two
+      const yMid = (yScale(d.binary) + yScale(d.ternary)) / 2;
+      html += `<text x="${x + 10}" y="${yMid + 4}" text-anchor="start"
+                     style="font-family: 'JetBrains Mono', monospace; font-size: 11px;
+                            font-weight: 700; fill: #6affae;">${d.speedup.toFixed(1)}×</text>`;
+    });
+
+    // Series labels (top of chart, near last data point)
+    const lastX = xScale(Math.log2(NN_DATA[NN_DATA.length - 1].len));
+    html += `<text x="${PAD.l + 8}" y="${yScale(NN_DATA[0].binary) - 12}"
+                   style="font-family: 'JetBrains Mono', monospace; font-size: 10px;
+                          letter-spacing: 0.2em; fill: #ff5d3b;">BINARY</text>`;
+    html += `<text x="${PAD.l + 8}" y="${yScale(NN_DATA[0].ternary) - 12}"
+                   style="font-family: 'JetBrains Mono', monospace; font-size: 10px;
+                          letter-spacing: 0.2em; fill: #6affae;">TERNARY</text>`;
+
+    svg.innerHTML = html;
+  };
+
+  renderNNChart();
+</script>
+</body>
+</html>
